@@ -93,7 +93,7 @@ public class AlunosController extends HttpServlet {
         
         request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
     }
-}
+
 
 /**
  * Returns a short description of the servlet.
