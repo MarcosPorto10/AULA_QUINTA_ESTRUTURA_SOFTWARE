@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author PC
+ * @author souza
  */
 public class AlunosController extends HttpServlet {
 
@@ -29,7 +23,6 @@ public class AlunosController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -48,12 +41,10 @@ public class AlunosController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
+        // a linha baixo recupera os dados enviados via POST
         String ra = request.getParameter("ra");
-        request.setAttribute("mensagem",
-                "O RA digitado foi : " + ra);
+        request.setAttribute("mensagem", "O RA digitado foi: " + ra);
 
-        
-        
         request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
     }
 
@@ -72,39 +63,35 @@ public class AlunosController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        //a linha abaixo recupera os dados enviados via POST
-       
-        String ra = request.getParameter("ra");
-        String nome = request.getParameter("nome");
-        String curso = request.getParameter("curso");
-        
-        
-        request.setAttribute("msg_ra",
-                "O RA digitado foi : " + ra);
-        
-        
-        request.setAttribute("msg_nome",
-                "O Nome digitado foi : " + nome);
-       
-        
-        request.setAttribute("msg_curso",
-                "O Curso digitado foi : " + curso);
-        
-        
-        request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+        // pega o valor enviado na variável "operacao"
+        String operacao = request.getParameter("operacao");
+
+        // criar um menu de opções com a estrutura de seleção switch
+        switch (operacao) {
+            case "Inserir":
+                request.setAttribute("mensagem", "Inserir");
+                request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                break;
+            case "Pesquisar":
+                request.setAttribute("mensagem", "Pesquisar");
+                request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                break;
+            case "Editar":
+                request.setAttribute("mensagem", "Editar");
+                request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                break;
+            case "Atualizar":
+                request.setAttribute("mensagem", "Atualizar");
+                request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                break;
+            case "Excluir":
+                request.setAttribute("mensagem", "Excluir");
+                request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                break;
+            case "ConfirmarExclusao":
+                request.setAttribute("mensagem", "Confirmar Exclusão");
+                request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                break;
+        }
     }
-
-
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */
-@Override
-       public String getServletInfo() {
-        return "Short description";
 }
-// </editor-fold>
-
-}
-//testesteteste
