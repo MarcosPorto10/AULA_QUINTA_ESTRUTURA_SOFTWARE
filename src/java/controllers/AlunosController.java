@@ -20,7 +20,8 @@ public class AlunosController extends HttpServlet {
     
     //criar uma lista para receber alunos vindos do model
     List<Aluno> alunosDados;
-       
+     //cria um objeto aluno para classe toda
+    Aluno aluno=new Aluno();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -93,8 +94,30 @@ public class AlunosController extends HttpServlet {
         // criar um menu de opções com a estrutura de seleção switch
         switch (operacao) {
             case "Inserir":
-                request.setAttribute("mensagem", "Inserir");
+                try{
+                    //vamos recuperar os dados do formulario
+                    aluno.setRa(request.getParameter("ra"));
+                    aluno.setNome(request.getParameter("nome"));
+                    aluno.setCurso(request.getParameter("curso"));
+                    
+                    AlunoModel am = new AlunoModel();
+                    
+                    //passando os valores para o objeto "am"
+                    am.inserir(aluno);
+                    
+                    //redireciona para a view messagem
+                request.setAttribute("mensagem",am.toString());
                 request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                    
+                }catch(SQLException sql){
+                request.setAttribute("mensagem", sql.getMessage());
+                request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+                
+                }
+                
+                //request.setAttribute("mensagem", "Inserir novo registro ");
+                //request.getRequestDispatcher("view_mensagem.jsp").forward(request, response);
+               
                 break;
             case "Pesquisar":
                 request.setAttribute("mensagem", "Pesquisar");

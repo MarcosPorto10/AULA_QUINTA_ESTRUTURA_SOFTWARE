@@ -15,7 +15,8 @@ public class AlunoModel implements Serializable {
     // declarando os atributos principais
 
     private Connection conexao = null;
-
+    private String status;
+    
     //metodo construtor
     //toda vez que a classe AlunoModel for instanciada,
     //o construtor fará automaticamente a conexãoo com o banco
@@ -28,6 +29,31 @@ public class AlunoModel implements Serializable {
 //Implementar os metodos do CRUD
     //metodo inserir (create) insert
     public void inserir(Aluno aluno) {
+        try{
+            String sql="INSERT INTO alunos (ra,nome,curso)VALUES (?,?,?)";    
+        try(PreparedStatement ps =conexao.prepareStatement(sql)){
+        //atribuir os valores do objetos as posicões (as interrogações)
+        ps.setString(1, aluno.getRa());
+        ps.setString(2, aluno.getNome());
+        ps.setString(3,aluno.getCurso());
+        
+        //executa o SQL no banco de dados
+        
+        ps.execute();
+        
+        //fecha a conexão com o banco 
+        
+        ps.close();
+        }
+        conexao.close();//fecha a conexao com banco
+       //mensagem para usuario 
+        this.status="Aluno[" + aluno.getNome()+ "] inserindo com sucesso !";
+        
+        }catch(SQLException ex){
+        //se houver erro,vamos avisa o usuario
+        
+        this.status= "Erro ao inserir o aluno [" + ex.getMessage() + "]";
+        }
     }
     //metodo   de listar e pesquisar read-select
 
@@ -86,5 +112,11 @@ public class AlunoModel implements Serializable {
     public void excluir(Aluno aluno) {
 
     }
-
+  //metodo que retorna um texto quando chamamos o modelo.toString
+    @Override
+   
+   public String toString(){
+       
+       return status;
+   }
 }
