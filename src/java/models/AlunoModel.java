@@ -102,7 +102,7 @@ public class AlunoModel implements Serializable {
 
         return null;
     }
-//metodo para atualizar um registro upadate
+//metodo para atualizar um registro update
 
     public void atualizar(Aluno aluno) {
 

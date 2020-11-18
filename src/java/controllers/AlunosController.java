@@ -21,7 +21,7 @@ public class AlunosController extends HttpServlet {
     //criar uma lista para receber alunos vindos do model
     List<Aluno> alunosDados;
      //cria um objeto aluno para classe toda
-    Aluno aluno=new Aluno();
+    Aluno aluno = new Aluno();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
