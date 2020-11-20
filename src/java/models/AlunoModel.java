@@ -16,7 +16,7 @@ public class AlunoModel implements Serializable {
 
     private Connection conexao = null;
     private String status;
-    
+
     //metodo construtor
     //toda vez que a classe AlunoModel for instanciada,
     //o construtor fará automaticamente a conexãoo com o banco
@@ -29,30 +29,28 @@ public class AlunoModel implements Serializable {
 //Implementar os metodos do CRUD
     //metodo inserir (create) insert
     public void inserir(Aluno aluno) {
-        try{
-            String sql="INSERT INTO alunos (ra,nome,curso)VALUES (?,?,?)";    
-        try(PreparedStatement ps =conexao.prepareStatement(sql)){
-        //atribuir os valores do objetos as posicões (as interrogações)
-        ps.setString(1, aluno.getRa());
-        ps.setString(2, aluno.getNome());
-        ps.setString(3,aluno.getCurso());
-        
-        //executa o SQL no banco de dados
-        
-        ps.execute();
-        
-        //fecha a conexão com o banco 
-        
-        ps.close();
-        }
-        conexao.close();//fecha a conexao com banco
-       //mensagem para usuario 
-        this.status="Aluno[" + aluno.getNome()+ "] inserindo com sucesso !";
-        
-        }catch(SQLException ex){
-        //se houver erro,vamos avisa o usuario
-        
-        this.status= "Erro ao inserir o aluno [" + ex.getMessage() + "]";
+        try {
+            String sql = "INSERT INTO alunos (ra,nome,curso)VALUES (?,?,?)";
+            try (PreparedStatement ps = conexao.prepareStatement(sql)) {
+                //atribuir os valores do objetos as posicões (as interrogações)
+                ps.setString(1, aluno.getRa());
+                ps.setString(2, aluno.getNome());
+                ps.setString(3, aluno.getCurso());
+
+                //executa o SQL no banco de dados
+                ps.execute();
+
+                //fecha a conexão com o banco 
+                ps.close();
+            }
+            conexao.close();//fecha a conexao com banco
+            //mensagem para usuario 
+            this.status = "Aluno[" + aluno.getNome() + "] inserindo com sucesso !";
+
+        } catch (SQLException ex) {
+            //se houver erro,vamos avisa o usuario
+
+            this.status = "Erro ao inserir o aluno [" + ex.getMessage() + "]";
         }
     }
     //metodo   de listar e pesquisar read-select
@@ -71,36 +69,78 @@ public class AlunoModel implements Serializable {
                     ResultSet rs = ps.executeQuery()) {//cursor do Android
                 //vamos percorrer (laço)os registros retornados (se houver)
                 //para transformar os dados TABULARES (relacional)em objetos
-                while(rs.next()){//enquanto houver proximo
-                    Aluno aluno =new Aluno();
+                while (rs.next()) {//enquanto houver proximo
+                    Aluno aluno = new Aluno();
                     aluno.setId(rs.getInt("id"));
                     aluno.setRa(rs.getString("ra"));
                     aluno.setNome(rs.getString("nome"));
                     aluno.setCurso(rs.getString("curso"));
-                    
+
                     //colocar o objeto que foi "populado ou alimentado"
                     //na nossa list de alunos(list <alunos>)
-                    
                     alunos.add(aluno);
-                
+
                 }
                 //fechamento das instancias rs e ps
                 rs.close();
                 ps.close();
-                
+
             }
             //vamos retornar a lista de objetos
             return alunos;
-            
+
         } catch (SQLException ex) {
             throw new RuntimeException("falha ao listar.", ex);
         }
 
     }
 
-    public List<Aluno> pesquisar(Aluno aluno) {
+    public List<Aluno> pesquisar(Aluno aluno, String tipo) {
+        //tipo :ra ,nome ou curso
+        List<Aluno> alunos = new ArrayList();//lista de objetos de aluno
+        PreparedStatement ps = null; //aqui declaramos a preparação
+        String sql = new String();
+        try {
+            //como selecionar as opçoes?
+            switch (tipo) {
+                case "ra":
+                    sql = "SELECT * FROM alunos WHERE ra =?";
+                    ps = conexao.prepareStatement(sql);
+                    ps.setString(1, aluno.getRa());
+                    break;
 
-        return null;
+                case "nome":
+                    sql = "SELECT * FROM alunos WHERE nome =? ORDER BY nome ASC";
+                    ps = conexao.prepareStatement(sql);
+                    ps.setString(1, aluno.getNome());
+                    break;
+
+                case "curso":
+                    sql = "SELECT * FROM alunos WHERE curso =? ORDER BY nome ASC";
+                    ps = conexao.prepareStatement(sql);
+                    ps.setString(1, aluno.getCurso());
+                    break;
+
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {//enquanto houver proximo
+                aluno = new Aluno();
+                aluno.setId(rs.getInt("id"));
+                aluno.setRa(rs.getString("ra"));
+                aluno.setNome(rs.getString("nome"));
+                aluno.setCurso(rs.getString("curso"));
+
+                alunos.add(aluno);
+            }
+            rs.close();
+            ps.close();
+            return alunos;
+
+        } catch (SQLException ex) {
+            throw new RuntimeException("Falha ao pesquisar");
+
+        }
+
     }
 //metodo para atualizar um registro update
 
@@ -112,11 +152,12 @@ public class AlunoModel implements Serializable {
     public void excluir(Aluno aluno) {
 
     }
-  //metodo que retorna um texto quando chamamos o modelo.toString
+    //metodo que retorna um texto quando chamamos o modelo.toString
+
     @Override
-   
-   public String toString(){
-       
-       return status;
-   }
+
+    public String toString() {
+
+        return status;
+    }
 }
